@@ -1,0 +1,25 @@
+{
+  "name": "megamod",
+  "version": "1.0.0",
+  "description": "A helper bot for discord",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daggerwolf45/MegaMod.git"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "mod",
+    "megamind"
+  ],
+  "author": "Sam Laird",
+  "license": "AGPL-3.0-only",
+  "bugs": {
+    "url": "https://github.com/daggerwolf45/MegaMod/issues"
+  },
+  "homepage": "https://github.com/daggerwolf45/MegaMod#readme"
+}
