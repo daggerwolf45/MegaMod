@@ -63,7 +63,7 @@ module.exports = {
         const authorDir = "/" + message.author.username;
         const dir = `${location.saveDir.root}${location.saveDir.path}${authorDir}${folder}`
         
-        const fullPath = `${dir}/${filename}`;
+        let fullPath = `${dir}/${filename}`;
         
 
         if (links.size != 0){
@@ -79,9 +79,16 @@ module.exports = {
                         console.error(error);
                         return;
                     }
-                    fs.writeFile(fullPath, text, null, err => logSave(err, fullPath, filename));
                 })
-            } else fs.writeFile(fullPath, text, null, err => logSave(err, fullPath, filename));
+            }
+
+            if (fs.existsSync(fullPath)){
+                const names = incrementFilename(fullPath, filename);
+                fullPath = names[0];
+                filename = names[1]
+            }
+            
+            fs.writeFile(fullPath, text, null, err => logSave(err, fullPath, filename));
         }
 
         console.log("Started save..");
@@ -113,6 +120,29 @@ module.exports = {
 
         async function fileSave(data){
 
+        }
+
+        function incrementFilename(path, file, i, ext){
+            if (!i){
+                ext = "." + file.split('.').pop();
+                
+                path = path.substr(0, path.length-file.length);
+                file = file.substr(0, file.length-ext.length);
+                file += " (0)" + ext;
+                path += file;
+                i = 1;
+            }
+                
+            path = path.substr(0, path.length-file.length);
+            file = file.substr(0, file.length-ext.length-2);
+            file += `${i})${ext}`;
+            path += file;
+
+            if (fs.existsSync(path)){
+                return incrementFilename(path, file, i+1, ext);
+            }
+
+            return [path, file];
         }
     }
 }
