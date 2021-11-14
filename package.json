@@ -21,5 +21,10 @@
   "bugs": {
     "url": "https://github.com/daggerwolf45/MegaMod/issues"
   },
-  "homepage": "https://github.com/daggerwolf45/MegaMod#readme"
+  "homepage": "https://github.com/daggerwolf45/MegaMod#readme",
+  "dependencies": {
+    "discord.js": "^13.3.1",
+    "fetch": "^1.1.0",
+    "nodemon": "^2.0.15"
+  }
 }
