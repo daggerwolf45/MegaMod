@@ -24,7 +24,7 @@
   "homepage": "https://github.com/daggerwolf45/MegaMod#readme",
   "dependencies": {
     "discord.js": "^13.3.1",
-    "fetch": "^1.1.0",
+    "node-fetch": "^2.6.6",
     "nodemon": "^2.0.15"
   }
 }
