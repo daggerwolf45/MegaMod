@@ -124,7 +124,9 @@ module.exports = {
         async function download(url){
             console.log(url);
             const response = await fetch(url);
-            return await response.text();
+            const data = await response.buffer();
+
+            return data
         }
 
         function textToLink(text){
