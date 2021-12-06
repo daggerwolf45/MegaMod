@@ -9,17 +9,12 @@ module.exports = {
     description: 'Stores message',
     execute(message, args, client){
         let folder = "";
-        let text;
-        let filename;
         let links = [];
-
-        console.log(args);
 
         /*
         Determine links + save directory
          */
         if (message.attachments.size > 0){       //If received attachment
-            console.log("Got file");
             if (message.attachments.size !== 0){        //Determine naming and folder hierarchy
                 if (args.length > 0) {
                     folder = `/${args[0]}`;
@@ -38,8 +33,6 @@ module.exports = {
                 links.push(link);
             }
         } else {                    //If received just text
-            console.log("Got link");
-
             const text = args[args.length-1];
             const link = textToLink(text);
             links.push(link);
@@ -52,14 +45,9 @@ module.exports = {
             }
         }
 
-
-        console.log("Analyzed input");
-
         //Create/Set dirs
         const authorDir = "/" + message.author.username;
         const dir = `${location.saveDir.root}${location.saveDir.path}${authorDir}${folder}`
-
-        console.log(dir);
 
         //Check if directories exist
         if (!fs.existsSync(dir)){
@@ -78,7 +66,6 @@ module.exports = {
             for (const link of links){
                 let filename = link.name;
                 let fullPath = `${dir}/${link.name}`;
-                console.log(fullPath);
 
                 if (fs.existsSync(fullPath)){
                     console.log("Found pre-existing file");
@@ -86,16 +73,22 @@ module.exports = {
                     fullPath = names[0];
                     filename = names[1];
                 }
-                console.log(fullPath);
 
                 //Save File
                 download(link.url).then(data=>{
                     fs.writeFile(fullPath, data, null, err => logSave(err, fullPath, filename));
                 });
-
             }
+
+
             return 0;
         }
+
+        const dm = (message.channel.type === "DM");
+        if (!dm){
+            message.delete();
+        }
+        return 0;
 
 
         async function logSave(error, path, file){
@@ -115,18 +108,11 @@ module.exports = {
                     message.channel.send(":thumbsup:");
                 }
             }
-
-            if (!dm){
-                message.delete();
-            }
         }
 
         async function download(url){
-            console.log(url);
             const response = await fetch(url);
-            const data = await response.buffer();
-
-            return data
+            return await response.buffer();
         }
 
         function textToLink(text){
