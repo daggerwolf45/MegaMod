@@ -38,7 +38,12 @@ module.exports = {
             links.push(link);
 
             if (args.length > 0) {
-
+                folder = `/${args[0]}`;
+                if (args.length > 1){
+                    const edit = links.pop();
+                    edit.name = args[1];
+                    links.push(edit);
+                }
             } else {
                 console.error('Nothing to save...');
                 return -1;
