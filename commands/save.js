@@ -85,15 +85,13 @@ module.exports = {
                 });
             }
 
+            const dm = (message.channel.type === "DM");
+            if (!dm){
+                message.delete();
+            }
 
             return 0;
         }
-
-        const dm = (message.channel.type === "DM");
-        if (!dm){
-            message.delete();
-        }
-        return 0;
 
 
         async function logSave(error, path, file){
