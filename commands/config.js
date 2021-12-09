@@ -4,34 +4,25 @@ const vars = JSON.parse(fs.readFileSync("./variables.json"));
 module.exports = {
     name: 'config',
     description: 'Sets enviroment variables',
-    execute(message, args, file){
-        if (args.length > 0){
-            if (args[0] === "all"){
+    execute(message, args, file) {
+        if (args.length === 1) {
+            if (args[0] === "all") {
                 message.channel.send(`\`\`\`json\n${JSON.stringify(vars, null, 2)}\`\`\``);
                 return 0;
-            } else if (args[0] === "help"){
-                message.channel.send(
-                    "**Config**: Allows for setting and reading bot configuration.\n" +
-                    "**Example A**:\n" +
-                    "> config location/saveDir/path\n" +
-                    "returns\n" +
-                    `> ${getObj("location/saveDir/path")}\n` +
-                    "\n" +
-                    "**Example B**:\n" +
-                    "> config config/pathSep -\n" +
-                    "Will set the variable at" +
-                    "```json\n\"config\": {\n  pathSep\n}```" +
-                    "to:\n" +
-                    "> '-'\n" +
-                    "\n" +
-                    "*Tip*: Running 'config all' will read out all variables.");
-                return 0;
+            } else if (args[0] === "reload"){
             }
 
             const value = getObj(vars, args[0]);
-            if (value === -1){
+            if (value === -1) {
                 message.channel.send("Could not find requested parameter. :confused:");
+            } else {
+                message.channel.send(`\`\`\`json\n${JSON.stringify(value, null, 2)}\`\`\``);
             }
+        } else if (args.length > 1){
+            console.log(getObj(vars, args[0]));
+            updateVar(vars, args[0], args[1]);
+            console.log(getObj(vars, args[0]));
+
         } else {
             message.channel.send("Invalid number of arguments. Must at least specify a variable to read (ie: 'config path')");
         }
@@ -48,10 +39,26 @@ function getObj(obj, path){
         }
     }
 
-    console.log(key);
-
+    return key;
 }
 
 function updateVar(obj, path, key){
+    console.log(`Setting ${path}, to ${key}`);
+    path = path.split(vars.config.pathSep);
 
+    for (let i = 0; i < path.length-1; i++){
+        obj = obj[path[i]];
+        if (!obj){
+            return -1;
+        }
+    }
+
+    obj[path[path.length-1]] = key;
+    saveVars();
 }
+
+function saveVars(){
+    
+    fs.writeFileSync("./variables.json", JSON.stringify(vars, null, 2));
+}
+

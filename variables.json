@@ -1,15 +1,15 @@
 {
-    "location": {
-        "saveDir": {
-            "root": "./",
-            "path": "files"
-        },
-        "log": {
-            "guild": "909340243642163221",
-            "channel": "909340565651472385"
-        }
+  "location": {
+    "saveDir": {
+      "root": "./",
+      "path": "files"
     },
-    "config": {
-        "pathSep": "/"
+    "log": {
+      "guild": "909340243642163221",
+      "channel": "909340565651472385"
     }
+  },
+  "config": {
+    "pathSep": "/"
+  }
 }
