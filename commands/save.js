@@ -2,7 +2,7 @@ const fs = require('fs');
 const fetch = require('node-fetch');
 const Collection = require('discord.js').Collection;
 
-const vars = JSON.parse(fs.readFileSync("./variables.json", 'utf8'));
+const vars = JSON.parse(fs.readFileSync("./config.json", 'utf8'));
 const location = vars.location;
 
 const handlers = loadHandlers();

@@ -1,5 +1,5 @@
 const fs = require("fs");
-const vars = JSON.parse(fs.readFileSync("./variables.json"));
+const vars = JSON.parse(fs.readFileSync("./config.json"));
 
 module.exports = {
     name: 'config',
@@ -59,6 +59,6 @@ function updateVar(obj, path, key){
 
 function saveVars(){
     
-    fs.writeFileSync("./variables.json", JSON.stringify(vars, null, 2));
+    fs.writeFileSync("./config.json", JSON.stringify(vars, null, 2));
 }
 
