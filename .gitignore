@@ -2,3 +2,5 @@ files
 keys.json
 .idea
 node_modules
+packages
+commands/test.js
