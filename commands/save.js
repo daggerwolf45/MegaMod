@@ -72,6 +72,7 @@ module.exports = {
         //Save links
         if (links.size !== 0) {
             for (let link of links) {
+
                 let linkHandler = async function(i,j){return i};
                 let downloader = download;
                 let saveAgent = saveFile;
@@ -151,7 +152,6 @@ module.exports = {
         }
 
         async function download(url) {
-            console.log("Got here");
             const response = await fetch(url);
             return await response.buffer();
         }
@@ -160,7 +160,7 @@ module.exports = {
             const split = text.split("/");
 
             let index = split.length - 1;
-            if (split[index].size < 1) {
+            if (split[index].length < 1) {
                 index--;
             }
 
@@ -169,13 +169,10 @@ module.exports = {
                 name += ".html";
             }
 
-            const link = {
+            return {
                 name: name,
                 url: text
             }
-
-            console.log(link);
-            return link
         }
 
         function incrementFilename(path, file, i, ext) {

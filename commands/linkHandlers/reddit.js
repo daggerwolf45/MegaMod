@@ -13,6 +13,7 @@ Note:
  */
 exports.linkHandler = async function (input, custname){
     let link = input.url;
+    let video = false;
 
     //Verify link
     if (!link.includes("reddit.com/r/")){
@@ -37,11 +38,10 @@ exports.linkHandler = async function (input, custname){
     let line = body.match(filerHTMLRegex);
     try {
         line = line[0];
-        console.log("WTF?");
     } catch (e){
         filerHTMLRegex = /.*https:\/\/v.redd.it.*\n/g;
         line = body.match(filerHTMLRegex);
-        console.log(line);
+        video = true;
         try {
             line = line[2];
         } catch {
@@ -53,7 +53,6 @@ exports.linkHandler = async function (input, custname){
     //Filter out exact download link.
     let filterLineRegex = /(?<=href=").*?(?=")/g;
     let finalUrl = line.match(filterLineRegex);
-    console.log(line);
     try {
         finalUrl = finalUrl[0];
     } catch {
@@ -66,8 +65,13 @@ exports.linkHandler = async function (input, custname){
     if (custname){
         filename = custname;
     } else {
-        const split = finalUrl.split(".");
-        filename = split[split.length-2] + split[split.length-1];
+        let filenameReg
+        if (video){
+            filenameReg = /(?<=https:\/\/v\.redd\.it\/).*?(?=\/)/;
+            filename = finalUrl.match(filenameReg) + ".mp4"
+        } else{
+            filename = finalUrl.substr(17);
+        }
     }
 
     return {
