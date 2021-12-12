@@ -1,6 +1,5 @@
 const fs = require('fs');
 const fetch = require('node-fetch');
-const Collection = require('discord.js').Collection;
 
 const vars = JSON.parse(fs.readFileSync("./config.json", 'utf8'));
 const location = vars.location;
@@ -13,16 +12,17 @@ module.exports = {
     execute(message, args, client) {
         let folder = "";
         let links = [];
+        let customFilename = false;
 
         /*
         Determine links + save directory
          */
         if (message.attachments.size > 0) {       //If received attachment
             if (message.attachments.size !== 0) {        //Determine naming and folder hierarchy
-                if (args.length > 0) {
+                if (args.length > 1) {
                     folder = `/${args[0]}`;
-                    if (args.length > 1 && message.attachments.size === 1) {
-                        message.attachments.at(0).name = args[1];
+                    if (args.length > 2 && message.attachments.size === 1) {
+                        customFilename = args[1];
                     }
                 }
             }
@@ -36,16 +36,16 @@ module.exports = {
                 links.push(link);
             }
         } else {                    //If received just text
-            const text = args[args.length - 1];
-            const link = textToLink(text);
-            links.push(link);
+            if (args.length > 0){
+                const text = args[args.length - 1];
+                const link = textToLink(text);
+                links.push(link);
 
-            if (args.length > 0) {
-                folder = `/${args[0]}`;
                 if (args.length > 1) {
-                    const edit = links.pop();
-                    edit.name = args[1];
-                    links.push(edit);
+                    folder = `/${args[0]}`;
+                    if (args.length > 2) {
+                        customFilename = args[1];
+                    }
                 }
             } else {
                 console.error('Nothing to save...');
@@ -62,7 +62,7 @@ module.exports = {
             fs.mkdir(dir, {recursive: true}, error => {
                 if (error) {
                     console.error(error);
-                    return;
+                    return -1;
                 }
             })
         }
@@ -71,21 +71,51 @@ module.exports = {
 
         //Save links
         if (links.size !== 0) {
-            for (const link of links) {
-                let filename = link.name;
-                let fullPath = `${dir}/${link.name}`;
+            for (let link of links) {
+                let linkHandler = async function(i,j){return i};
+                let downloader = download;
+                let saveAgent = saveFile;
 
-                if (fs.existsSync(fullPath)) {
-                    console.log("Found pre-existing file");
-                    const names = incrementFilename(fullPath, filename);
-                    fullPath = names[0];
-                    filename = names[1];
+                //Check handlers
+                if (handlers){                                      //Check if any custom link handlers exist
+                    const handler = handlers.getHandler(link.url);      //Get handler for link
+                    if (handler){                                       //Check if handler exists
+                        if (handler.downloader){                            //If the handler requires a custom download function
+                            if (handler.saveAgent){                             //If the handler requires a fully custom download solution
+                                saveAgent = handler.saveAgent;                      //Set saveAgent to the handler's
+                            }
+                            downloader = handler.downloader;                  //Set downloader to handler's
+                        }
+                        linkHandler = handler.linkHandler;                  //Set linkHandler to handler's
+                    }
                 }
 
-                //Save File
-                download(link.url).then(data => {
-                    fs.writeFile(fullPath, data, null, err => logSave(err, fullPath, filename));
-                });
+
+                linkHandler(link, customFilename).then(newlink => {
+                    if (!newlink){
+                        void logSave(true, link.name, link.url);
+                        return;
+                    }
+                    link = newlink;
+
+                    let filename = link.name;
+                    if (customFilename) filename = customFilename;
+                    let fullPath = `${dir}/${link.name}`;
+
+                    if (fs.existsSync(fullPath)) {
+                        console.log("Found pre-existing file");
+                        const names = incrementFilename(fullPath, filename);
+                        fs.closeSync(fs.openSync(fullPath, 'w'));
+                        fullPath = names[0];
+                        filename = names[1];
+                    }
+
+
+                    //Save File
+                    downloader(link.url).then(data => {
+                        void saveAgent(fullPath, filename, data);
+                    });
+                })
             }
 
             const dm = (message.channel.type === "DM");
@@ -94,6 +124,10 @@ module.exports = {
             }
 
             return 0;
+        }
+
+        async function saveFile(path, filename, data){
+            fs.writeFile(path, data, null, err => logSave(err, path, filename));
         }
 
 
@@ -117,6 +151,7 @@ module.exports = {
         }
 
         async function download(url) {
+            console.log("Got here");
             const response = await fetch(url);
             return await response.buffer();
         }
@@ -180,6 +215,14 @@ function loadHandlers(){
             handlers.list.push(name);
         }
 
+        handlers.getHandler = function (link){
+            for (const handler of handlers.list){
+                if (link.includes(handler)){
+                    return handlers[handler];
+                }
+            }
+            return null;
+        }
 
         return handlers;
     } else return null;
