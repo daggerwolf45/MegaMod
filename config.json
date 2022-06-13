@@ -12,5 +12,32 @@
   "config": {
     "pathSep": "/"
   },
-  "useLinkHandlers": true
+  "fs": {
+    "root": "./Filesystem",
+    "res": {
+      "mount": "/mnt",
+      "home": "/home"
+    },
+    "alias": {
+      "home": "/home"
+    },
+    "mounts": {
+      "c": "/"
+    },
+    "symbols": {
+      "~": "home"
+    }
+  },
+  "messageCreate": {
+    "override": "fs",
+    "channelNames": [
+      "megamod-testing-zone"
+    ],
+    "guilds": [
+      "Verschlimmbesserung"
+    ]
+  },
+  "useLinkHandlers": true,
+  "debug": true,
+  "verbose": false
 }

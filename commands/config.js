@@ -10,6 +10,11 @@ module.exports = {
                 message.channel.send(`\`\`\`json\n${JSON.stringify(vars, null, 2)}\`\`\``);
                 return 0;
             } else if (args[0] === "reload"){
+            } else if (args[0] === "quit"){
+                message.channel.send("So long and thanks for all the fish!");
+                new Promise(resolve => setTimeout(resolve, 1000)).then(r => process.exit(0));
+                return 0;
+
             }
 
             const value = getObj(vars, args[0]);
@@ -53,12 +58,17 @@ function updateVar(obj, path, key){
         }
     }
 
+    if (key === "true"){
+        key = true;
+    } else if (key === "false"){
+        key = false;
+    }
+
     obj[path[path.length-1]] = key;
     saveVars();
 }
 
 function saveVars(){
-    
     fs.writeFileSync("./config.json", JSON.stringify(vars, null, 2));
 }
 

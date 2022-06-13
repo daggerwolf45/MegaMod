@@ -1,4 +1,7 @@
 const fs = require('fs');
+const db = require('./database/db');
+
+db.setup();
 
 try {
     require("./keys.json");
