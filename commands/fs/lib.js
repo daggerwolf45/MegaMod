@@ -77,14 +77,20 @@ exports.pathRec = function (path){
         climbVar = climbers*2 + 1;
     } else climbVar = 0;
     const slashes = (newPath.match(/\//g) || []).length;
+    const doubleSlashes = (newPath.match(/\/\//g) || []).length;
     let decent = slashes - climbVar  - 1
     if (newPath.charAt(newPath.length -1) === "/" && (newPath.charAt(newPath.length -2) !== "." && newPath.charAt(newPath.length -3) !== ".")) decent -= 1;
 
     vmsg(`Path Stats\nClimbers: ${climbers}\nClimbVar: ${climbVar}\nSlashes: ${slashes}\nDouble Slashes: ${doubleSlashes}\nDecent: ${decent}\n\n`)
-    dmsg(`Converted '${path}' into '${newPath}'`);
+    let newPath2 = newPath;
+    for (let i = 0; i < climbers; i++) {
+        newPath2 = newPath2.substring(0, newPath2.indexOf("../"))
+    }
+
+    dmsg(`Converted '${path}' into '${newPath}', alt path: ${newPath2}`);
     if (decent < 0){
         return 1;   //Goes out of range
-    } else if ((newPath.match(/\/\//g) || []).length > 0) {
+    } else if (doubleSlashes > 0) {
         return 2;   //Uses double slashes
     }
 

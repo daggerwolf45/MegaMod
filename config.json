@@ -39,5 +39,5 @@
   },
   "useLinkHandlers": true,
   "debug": true,
-  "verbose": false
+  "verbose": true
 }

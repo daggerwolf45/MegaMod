@@ -12,7 +12,9 @@ module.exports = {
 }
 
 function displayPath(input){
-    let files = [], path, message = ""
+    lib.vmsg(`Running LS=>\nInput: ${input}\nCursor:${lib.cursor.at}`)
+
+    let files = [], path, message = "> "
     if (input == null || input.length <= 0){
         input = lib.cursor.at
     }
@@ -50,11 +52,13 @@ function displayPath(input){
     //Determine if each file is folder or file
     files.forEach(file => {
         if(fs.lstatSync(path + "/" + file).isDirectory()){
-            message += "*" + file + "*\n"
+            message += "*" + file + "*\n> "
         } else {
-            message += file + "\n"
+            message += file + "\n> "
         }
     })
+
+    message = message.substring(0, message.length-2);
 
     return {
         code: 0,
