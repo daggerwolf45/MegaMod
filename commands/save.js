@@ -54,9 +54,14 @@ module.exports = {
         }
 
         //Create/Set dirs
-        //TODO Integrate with VFS module
         const authorDir = "/" + message.author.username;
-        const dir = `${location.saveDir.root}${location.saveDir.path}${authorDir}${folder}`
+        let dir;
+        if (fs.existsSync("./commands/fs/lib.js")){
+            const fslib = require("./fs/lib");
+            dir = `${fslib.vfs.root}${vars.fs.res.home}${authorDir}${folder}`
+        } else {
+            dir = `${location.saveDir.root}${location.saveDir.path}${authorDir}${folder}`
+        }
 
         //Check if directories exist
         if (!fs.existsSync(dir)) {

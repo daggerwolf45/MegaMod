@@ -48,7 +48,9 @@ exports.returns = returns;
 /*
     Converts vFS path to actual path
     TODO add support for mount points...
+    TODO automatically use $/home/{discordUsername} for home
     FUTURE-TODO add file metadata and virtual unix perms
+
     Returns:
         String: Valid path translation
         1: Illegal path
