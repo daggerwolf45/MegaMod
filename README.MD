@@ -12,6 +12,7 @@ To run, do the following
  - Download links/attachments to a *location*
  - Convert reddit links to images/videos for downloading (With API to add easily add other sites/services)
  - Change configs from chat, no more messing with config files.
+ - Virtual file system module
 
 ## Future features
  - Cloud download locations (currently only support for local directories)

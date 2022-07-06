@@ -10,17 +10,24 @@ module.exports = {
     }
 }
 
+/*
+    Primary Function
+ */
 function changeDirectory(path){
+    //Convert path to string
     if (Array.isArray(path)) {
         path = path.join(" ");
     }
     path = path.trim();
 
+    //If path is empty, set to home
     if (path === ""){
         lib.cursor.at = lib.vfs.aliases.home;
         lib.dmsg(`Changed path to ${lib.cursor.at}`);
         return lib.returns.none;
     }
+
+    //Convert path to system path
     const realPath = lib.pathRec(path);
 
     //Verify path exists
@@ -44,5 +51,5 @@ function changeDirectory(path){
     lib.cursor.at = realPath.substring(12);;
     lib.dmsg(`Changed cursor to ${lib.cursor.at}`);
 
-    return lib.returns.none;
+    return lib.returns.success;
 }

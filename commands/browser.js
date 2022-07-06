@@ -1,7 +1,7 @@
 const db = require('../database/db.js');
 const fs = require("fs");
 const lib = require("./fs/lib")
-const func = setupBrowser();
+setupBrowser();
 
 module.exports = {
     name: 'browser',

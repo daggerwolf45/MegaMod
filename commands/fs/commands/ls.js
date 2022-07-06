@@ -11,14 +11,18 @@ module.exports = {
     }
 }
 
+/*
+    Primary function
+ */
 function displayPath(input){
     lib.vmsg(`Running LS=>\nInput: ${input}\nCursor:${lib.cursor.at}`)
 
     let files = [], path, message = "> "
-    if (input == null || input.length <= 0){
+    if (input == null || input.length <= 0){ //Reformat input
         input = lib.cursor.at
     }
 
+    //Reformat path to be system path
     path = lib.pathRec(input);
 
     // Verify path exists & is valid

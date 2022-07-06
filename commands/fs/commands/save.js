@@ -8,6 +8,11 @@ module.exports = {
     }
 }
 
+/*
+    Primary Function
+
+    Writes vfs config to fs
+ */
 function saveConf(){
     fs.writeFileSync("./config.json", JSON.stringify(lib.vars, null, 2));
     return {

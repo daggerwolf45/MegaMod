@@ -29,7 +29,7 @@
     }
   },
   "messageCreate": {
-    "override": "fs",
+    "override": false,
     "channelNames": [
       "megamod-testing-zone"
     ],
@@ -38,6 +38,6 @@
     ]
   },
   "useLinkHandlers": true,
-  "debug": true,
-  "verbose": true
+  "debug": false,
+  "verbose": false
 }

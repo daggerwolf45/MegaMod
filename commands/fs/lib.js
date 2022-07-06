@@ -28,6 +28,8 @@ returns.none = {
     res: 0,
     msg: ""
 }
+returns.success = returns.none;
+
 returns.error = function(code){
     return {
         code: code,
@@ -46,6 +48,7 @@ exports.returns = returns;
 /*
     Converts vFS path to actual path
     TODO add support for mount points...
+    FUTURE-TODO add file metadata and virtual unix perms
     Returns:
         String: Valid path translation
         1: Illegal path
@@ -71,6 +74,8 @@ exports.pathRec = function (path){
     //Check depth
     //NOTE this doesn't allow for // as it currently breaks the check and is tricky to account for.
     //This could be fixed by re-writing to make a slash count only count if it's followed by a letter.
+
+    //Analyze path
     const climbers = (newPath.match(/\.\.\//g) || []).length;
     let climbVar;
     if (climbers > 0){
@@ -97,18 +102,21 @@ exports.pathRec = function (path){
     return newPath
 }
 
+//Debug message
 exports.dmsg = function (msg){
     if (exports.vars.debug === true){
         console.debug("[DEBUG]: " + msg);
     }
 }
 
+//Verbose message
 exports.vmsg = function (msg){
     if (exports.vars.debug === true && exports.vars.verbose === true){
         console.debug("[DEBUG]: " + msg);
     }
 }
 
+//Debug discord message
 exports.sdmsg = function (msg, channel){
     if (exports.vars.debug === true){
         console.info("[DEBUG-SENDING]: " + msg);
@@ -116,7 +124,7 @@ exports.sdmsg = function (msg, channel){
     channel.send(msg);
 }
 
-//Stupid ease of readability wrapper
+//Ease of use wrapper
 const dmsg = function (msg){
     return exports.dmsg(msg);
 }

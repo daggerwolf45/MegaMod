@@ -54,6 +54,7 @@ module.exports = {
         }
 
         //Create/Set dirs
+        //TODO Integrate with VFS module
         const authorDir = "/" + message.author.username;
         const dir = `${location.saveDir.root}${location.saveDir.path}${authorDir}${folder}`
 
